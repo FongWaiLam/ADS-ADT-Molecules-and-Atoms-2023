@@ -121,32 +121,23 @@ public class Atom  {
     public String traverseWithoutBracket(String printType) {
         String print = "";
         String bondChildPrint = "";
-        int noOfH = 0;
         for (Bond bond : bonds) {
             if ("smiles".equals(printType)) {
                 bondChildPrint = bond.getChild().smiles();
             } else if ("structural".equals(printType)) {
                 bondChildPrint = bond.getChild().structuralFormula();
             }
-//            if ("H".equals(bondChildPrint)) {
-//                noOfH++;
-//            } else
             if (!"".equals(bondChildPrint)) {
                 System.out.println("Bond: " + element + " and " + bond.getChild().element + " bond weight: " + bond.getWeight());
                 if (bond.getWeight() == 1) {
                     print += bondChildPrint;
                 } else if (bond.getWeight() == 2) {
-                    print += ("" + bondChildPrint);
+                    print += ("=" + bondChildPrint);
                 } else if (bond.getWeight() == 3) {
                     print += ("#" + bondChildPrint);
                 }
             }
         }
-//        if (noOfH == 1) {
-//            print += ("H");
-//        } else if (noOfH > 1) {
-//            print += ("H" + noOfH);
-//        }
         return print;
     }
     public String traverseWithBracket(String printType) {
@@ -192,11 +183,18 @@ public class Atom  {
 
     public String structuralFormula() {
         String structuralFormula = "";
-//        if (!"H".equals(element)) {
-            structuralFormula += element;
-//        } else if ("H".equals(element)) {
-//            return "";
-//        }
+        String hydrogen = "H";
+        if (!"H".equals(element)) {
+            if (this.countHBond() == 1) {
+                structuralFormula += (element + hydrogen);
+            } else if (this.countHBond() > 1) {
+                structuralFormula += (element + hydrogen + this.countHBond());
+            } else {
+                structuralFormula += element;
+            }
+        } else if ("H".equals(element)) {
+            return "";
+        }
         // Only 1 bond
         if (bonds.size() - this.countHBond() <= 1) {
             structuralFormula += traverseWithoutBracket("structural");
