@@ -100,8 +100,9 @@ public class TestMolecule {
 
         String name = "5-amino-4-methylpentanamide";
         Molecule mol = createMolecule(name, carbonAtoms, oxygenAtoms, nitrogenAtoms);
+
         System.out.println(name + " has smiles string " + mol.smilesString());
-        System.out.println(name + " and structure " + mol.structuralFormula());
+//        System.out.println(name + " has structural formula " + mol.structuralFormula());
 
         boolean containsAtom = mol.contains(carbonAtoms.get(4));
         String output = "";

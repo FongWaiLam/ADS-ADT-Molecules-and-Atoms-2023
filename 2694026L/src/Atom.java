@@ -72,28 +72,13 @@ public class Atom  {
 
     //now add all of the Atom constructors and methods you require
 
-//    public Atom getFreeBond(int strength){
-//            if (this.countFreeBond() >= strength) {
-//                System.out.println(this.element + " has free bonds >= " + strength);
-//                return this;
-//            }
-//            if (!bonds.isEmpty()) {
-//                for (Bond bond : bonds) {
-//                    Atom atomWithFreeBond = bond.getChild().getFreeBond(strength);
-//                    if (atomWithFreeBond != null) {
-//                        return atomWithFreeBond;
-//                    }
-//                }
-//            }
-//            return null;
-//    }
 
     public int countHBond() {
 //        System.out.println("Start counting H bond for element: " + element);
         int countOfHBond = 0;
         for (Bond bond : bonds) {
             if (bond.getChild().element.equals("H")) {
-                System.out.println("Found Free bond + 1");
+//                System.out.println("Found Free bond + 1");
                 countOfHBond++;
             }
         }
@@ -113,9 +98,9 @@ public class Atom  {
     public void addAtom(Atom atom, int strength) {
         for (int i = 0; i < strength; i++) {
             this.removeBond("H");
-            System.out.println(this.element + " has one H bond removed.");
+//            System.out.println(this.element + " has one H bond removed.");
             atom.removeBond("H");
-            System.out.println(atom.element + " has one H bond removed.");
+//            System.out.println(atom.element + " has one H bond removed.");
         }
         bonds.add(new Bond(atom, strength));
     }
@@ -125,25 +110,101 @@ public class Atom  {
             return true;
         } else {
             for (Bond bond : bonds) {
-                bond.getChild().contains(a);
+                if (bond.getChild().contains(a)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    public String smiles(String smiles) {
-        smiles += element;
+    public String traverseWithoutBracket(String printType) {
+        String print = "";
+        String bondChildPrint = "";
+        int noOfH = 0;
         for (Bond bond : bonds) {
-            bond.getChild().smiles(smiles);
+            if ("smiles".equals(printType)) {
+                bondChildPrint = bond.getChild().smiles();
+            } else if ("structural".equals(printType)) {
+                bondChildPrint = bond.getChild().structuralFormula();
+            }
+//            if ("H".equals(bondChildPrint)) {
+//                noOfH++;
+//            } else
+            if (!"".equals(bondChildPrint)) {
+                System.out.println("Bond: " + element + " and " + bond.getChild().element + " bond weight: " + bond.getWeight());
+                if (bond.getWeight() == 1) {
+                    print += bondChildPrint;
+                } else if (bond.getWeight() == 2) {
+                    print += ("" + bondChildPrint);
+                } else if (bond.getWeight() == 3) {
+                    print += ("#" + bondChildPrint);
+                }
+            }
+        }
+//        if (noOfH == 1) {
+//            print += ("H");
+//        } else if (noOfH > 1) {
+//            print += ("H" + noOfH);
+//        }
+        return print;
+    }
+    public String traverseWithBracket(String printType) {
+        String print = "";
+        String bondChildPrint = "";
+        for (Bond bond : bonds) {
+            System.out.println("Bond: " + element + " has " + bond.getChild().element);
+            if ("smiles".equals(printType)) {
+                bondChildPrint = bond.getChild().smiles();
+            } else if ("structural".equals(printType)) {
+                bondChildPrint = bond.getChild().structuralFormula();
+            }
+            if (!"".equals(bondChildPrint)) {
+                System.out.println("Bond: " + element +" and " + bond.getChild().element + " bond weight: " + bond.getWeight() );
+                if (bond.getWeight() == 1) {
+                    print += ("(" + bondChildPrint + ")");
+                } else if (bond.getWeight() == 2) {
+                    print += ("(=" + bondChildPrint + ")");
+                } else if (bond.getWeight() == 3) {
+                    print += ("(#" + bondChildPrint + ")");
+                }
+            }
+        }
+        return print;
+    }
+
+    public String smiles() {
+        String smiles = "";
+        if (!"H".equals(element)) {
+            smiles += element;
+        } else if ("H".equals(element)) {
+            return "";
+        }
+        // Only 1 bond
+        if (bonds.size() - this.countHBond() <= 1) {
+            smiles += traverseWithoutBracket("smiles");
+            // More than 1 bond
+        } else if (bonds.size() - this.countHBond() > 1) {
+            smiles += traverseWithBracket("smiles");
         }
         return smiles;
     }
 
-    public String structuralFormula(String structuralFormula) {
-        structuralFormula += element;
-        for (Bond bond : bonds) {
-            bond.getChild().structuralFormula(structuralFormula);
+    public String structuralFormula() {
+        String structuralFormula = "";
+//        if (!"H".equals(element)) {
+            structuralFormula += element;
+//        } else if ("H".equals(element)) {
+//            return "";
+//        }
+        // Only 1 bond
+        if (bonds.size() - this.countHBond() <= 1) {
+            structuralFormula += traverseWithoutBracket("structural");
+            // More than 1 bond
+        } else if (bonds.size() - this.countHBond() > 1) {
+            structuralFormula += traverseWithBracket("structural");
         }
         return structuralFormula;
     }
+
 }

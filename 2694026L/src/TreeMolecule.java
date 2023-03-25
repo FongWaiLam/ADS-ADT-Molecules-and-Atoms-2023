@@ -33,14 +33,14 @@ public class TreeMolecule implements Molecule {
     @Override
     public String smilesString() {
         String smiles = "";
-        smiles = first.smiles(smiles);
+        smiles = first.smiles();
         return smiles;
     }
 
     @Override
     public String structuralFormula() {
         String structuralFormula = "";
-        structuralFormula = first.structuralFormula(structuralFormula);
+        structuralFormula = first.structuralFormula();
         return structuralFormula;
     }
 
