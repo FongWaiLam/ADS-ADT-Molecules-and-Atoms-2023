@@ -1,8 +1,10 @@
-//Fong Wai Lam (2694026L)
+// Name: Fong Wai Lam (GUID: 2694026L)
 
-//add import statements
 
-//a bond is a pair (Atom, weight)
+/**
+ *  This class bond is a pair (Atom, weight).
+ *  It provides getters and setters for its members' operation.
+ */
 public class Bond {
 
     private Atom child;

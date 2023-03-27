@@ -1,9 +1,21 @@
-//Fong Wai Lam (2694026L)
+// Name: Fong Wai Lam (GUID: 2694026L)
 
-//add import statement
-
-
-
+/**
+ * The TreeMolecule class implements the Molecule interface and
+ * therefore implements the following four methods:
+ *  1. addBond(Atom a1, Atom a2, int strength)
+ *  2. contains(Atom target)
+ *  3. smilesString()
+ *  4. structuralFormula()
+ *
+ *  There are six helper methods which help the implementation of above methods:
+ *  1. countHBond(Atom atom)
+ *  2. contains(Atom curr, Atom target)
+ *  3. smiles(Atom curr)
+ *  4. structuralFormula(Atom curr)
+ *  5. traverseWithoutBracket(String printType, Atom curr)
+ *  6. traverseWithBracket(String printType, Atom curr)
+ */
 public class TreeMolecule implements Molecule {
 
     private Atom first;
@@ -12,39 +24,47 @@ public class TreeMolecule implements Molecule {
         first = atom;
     }
 
+    /**
+     *  A method implemented from interface Molecule
+     *  to add a new bond between atom a1 in the molecule and a new atom a2
+     */
     @Override
     public boolean addBond(Atom a1, Atom a2, int strength) {
-//        System.out.println("Add " + a2.getElement() + "(a2) to " + a1.getElement() + " (a1).");
         int a1HBondNo = countHBond(a1);
         int a2HBondNo = countHBond(a2);
         if (a1HBondNo >= strength && a2HBondNo >= strength) {
-//            System.out.println(a1.getElement() + "(a1) has enough hydrogen bond for strength " + strength);
             a1.addBond(a2, strength);
             return true;
         }
-//        System.out.println(a1.getElement() + " (a1) does not enough hydrogen bond for strength " + strength);
         return false;
     }
 
-    // Helper Method to count the H bond number
+    /**
+     *  Helper Method to count the H bond number
+     */
     public int countHBond(Atom atom) {
-//        System.out.println("Start counting H bond for element: " + element);
         int countOfHBond = 0;
         for (Bond bond : atom.getBonds()) {
             if (bond.getChild().getElement().equals("H")) {
-//                System.out.println("Found Free bond + 1");
                 countOfHBond++;
             }
         }
-//        System.out.println("H bond No. for element: " + element + " is " + countOfHBond);
         return countOfHBond;
     }
+
+    /**
+     *  A method implemented from interface Molecule
+     *  to check whether target atom is part of this molecule
+     */
     @Override
     public boolean contains(Atom target) {
         return contains(first, target);
     }
 
-    // Helper method for recursively changing the current atom
+    /**
+     *  Helper method for contains(Atom target)
+     *  to recursively changing the current atom (curr)
+     */
     public boolean contains(Atom curr, Atom target) {
         if (curr == null) {
             return false;
@@ -61,6 +81,10 @@ public class TreeMolecule implements Molecule {
         return false;
     }
 
+    /**
+     *  A method implemented from interface Molecule
+     *  to return a Smiles String of the molecule
+     */
     @Override
     public String smilesString() {
         String smiles = "";
@@ -68,7 +92,10 @@ public class TreeMolecule implements Molecule {
         return smiles;
     }
 
-    // Helper method for recursively changing the current atom
+    /**
+     *  Helper method for smilesString()
+     *  to recursively changing the current atom (curr)
+     */
     public String smiles(Atom curr) {
         String smiles = "";
         if (!"H".equals(curr.getElement())) {
@@ -86,6 +113,10 @@ public class TreeMolecule implements Molecule {
         return smiles;
     }
 
+    /**
+     *  A method implemented from interface Molecule
+     *  to return a Structural Formula of the molecule
+     */
     @Override
     public String structuralFormula() {
         String structuralFormula = "";
@@ -93,7 +124,10 @@ public class TreeMolecule implements Molecule {
         return structuralFormula;
     }
 
-    // Helper method for recursively changing the current atom
+    /**
+     *  Helper method for structuralFormula()
+     *  to recursively changing the current atom (curr)
+     */
     public String structuralFormula(Atom curr) {
         String structuralFormula = "";
         String hydrogen = "H";
@@ -110,7 +144,7 @@ public class TreeMolecule implements Molecule {
         }
         // Only 1 bond
         if (curr.getBonds().size() - countHBond(curr) <= 1) {
-            structuralFormula += traverseWithoutBracket("structural", curr); // StringFormat()
+            structuralFormula += traverseWithoutBracket("structural", curr);
             // More than 1 bond
         } else if (curr.getBonds().size() - countHBond(curr) > 1) {
             structuralFormula += traverseWithBracket("structural", curr);
@@ -118,8 +152,15 @@ public class TreeMolecule implements Molecule {
         return structuralFormula;
     }
 
-    // Helper method for traversing each atom in the bond
-    // and recursively calling targeted method
+
+    /**
+     *  Helper method for traversing each atom in the bond
+     *  and recursively calling targeted method according to the printType
+     *
+     *  The targeted methods are :
+     *  - smiles(Atom curr)
+     *  - structuralFormula(Atom curr)
+     */
     public String traverseWithoutBracket(String printType, Atom curr) {
         String print = "";
         String bondChildPrint = "";
@@ -131,7 +172,6 @@ public class TreeMolecule implements Molecule {
                 bondChildPrint = structuralFormula(bond.getChild());
             }
             if (!"".equals(bondChildPrint)) {
-//                System.out.println("Bond: " + curr.getElement() + " and " + bond.getChild().getElement() + " bond weight: " + bond.getWeight());
                 if (bond.getWeight() == 1) {
                     print += bondChildPrint;
                 } else if (bond.getWeight() == 2) {
@@ -144,21 +184,25 @@ public class TreeMolecule implements Molecule {
         return print;
     }
 
-    // Helper method for traversing each atom in the bond
-    // and recursively calling targeted method
+
+    /**
+     *  Helper method for traversing each atom in the bond
+     *  and recursively calling targeted method according to the printType
+     *  The targeted methods are :
+     *  - smiles(Atom curr)
+     *  - structuralFormula(Atom curr)
+     */
     public String traverseWithBracket(String printType, Atom curr) {
         String print = "";
         String bondChildPrint = "";
         if (curr == null) {return "";}
         for (Bond bond : curr.getBonds()) {
-//            System.out.println("Bond: " + curr.getElement() + " has " + bond.getChild().getElement());
             if ("smiles".equals(printType)) {
                 bondChildPrint = smiles(bond.getChild());
             } else if ("structural".equals(printType)) {
                 bondChildPrint = structuralFormula(bond.getChild());
             }
             if (!"".equals(bondChildPrint)) {
-//                System.out.println("Bond: " + curr.getElement() +" and " + bond.getChild().getElement() + " bond weight: " + bond.getWeight() );
                 if (bond.getWeight() == 1) {
                     print += ("(" + bondChildPrint + ")");
                 } else if (bond.getWeight() == 2) {
