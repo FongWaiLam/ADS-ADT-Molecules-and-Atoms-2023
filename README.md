@@ -1,6 +1,6 @@
 # Algorithms & Data Structures
 
-##ADT for Molecules and Atoms
+## ADT for Molecules and Atoms
 Implementation of an ADT that represents a molecule – i.e. a group of atoms connected by bonds
 
 ## Molecule
